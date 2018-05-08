@@ -8,6 +8,10 @@ To install fonts in the directory `fonts` located in current directory to `~./fo
 $ python3 fontstaller.py
 ```
 
+It copies any font file containing folder to ~./fonts and extracts and font containg folder to ~./fonts. It also checks that there are no duplicates.
+
+If you wist to install fonts to `\usr\share\fonts` You can use `--idir` option, but also take note that you would almost certainly have to use `sudo`.
+
 ### optional arguments
 
 |  argument     | default     | description                                |
