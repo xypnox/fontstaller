@@ -1,4 +1,5 @@
-# fontstaller
+![](fontstaller-logo.png)
+
 A repo to install a few fav fonts in Linux environments
 
 To install fonts in the directory `fonts` located in current directory to `~./fonts` run:
