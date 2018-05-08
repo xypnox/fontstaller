@@ -12,21 +12,15 @@ def isFont(arg):
     return False
 
 
-class Fontstaller:
-    def __init__(self, dir):
-        self.dir = dir
+def zipFontstaller(dir, exdir):
 
-    def install(self, exdir):
-        with ZipFile(self.dir, 'r') as myzip:
-            myzip.extract(exdir)
+    with ZipFile(dir, 'r') as myzip:
+        for font in myzip.namelist():
+            if isFont(font) is True:
+                myzip.extractall(exdir)
+                return True
 
-    def checkFont(self):
-        with ZipFile(self.dir, 'r') as myzip:
-            for font in myzip.namelist():
-                if isFont(font) is True:
-                    return True
-
-        return False
+    return False
 
 
 if __name__ == '__main__':
@@ -35,14 +29,17 @@ if __name__ == '__main__':
                         default='fonts',
                         help='The directory containing fonts')
     parser.add_argument('--idir',
-                        default='~./fonts',
+                        default=os.path.expanduser('~') + '/.fonts',
                         help='The directory in which fonts will be installed')
     parser.add_argument('--ignorezip',
                         action='store_true',
                         help='Ignore zipped files')
     args = parser.parse_args()
 
+    print(args)
+
     fontdirs = []
+    zipfiles = []
 
     for dirname, dirnames, filenames in os.walk(args.fdir):
         # print path to all subdirectories first.
@@ -53,10 +50,28 @@ if __name__ == '__main__':
         for filename in filenames:
             if isFont(filename):
                 print("Contains font", dirname)
-            print(os.path.join(dirname, filename))
+                fontdirs.append(dirname)
+            elif filename.endswith('zip'):
+                zipfiles.append(os.path.join(dirname, filename))
+            # print(os.path.join(dirname, filename))
 
         # Advanced usage:
         # editing the 'dirnames' list will stop os.walk() from recursing into there.
         if '.git' in dirnames:
             # don't go into any .git directories.
             dirnames.remove('.git')
+
+    fontdirs = list(set(fontdirs))
+    zipfiles = list(set(zipfiles))
+
+    # print(fontdirs)
+    # print(zipfiles)
+
+    for dir in fontdirs:
+        idir = args.idir + '/' + dir.split('/')[-1]
+        if not os.path.exists(idir):
+            os.makedirs(idir)
+            onlyfiles = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f)) and not f.endswith('zip')]
+            print(dir.split('/')[-1], onlyfiles)
+            for file_ in onlyfiles:
+                shutil.copy2(dir + '/' + file_, idir)
