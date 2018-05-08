@@ -1,6 +1,11 @@
 """
-    FontStaller by @xypnox
-    This script installs fonts for you
+    FONTSTALLER by @xypnox
+
+    for usage see README
+
+    Convention:
+        idir        install directory (where stuff would be installed)
+                    it's value changes with the context
 """
 
 from zipfile import ZipFile
@@ -18,29 +23,29 @@ def isFont(arg):
 
 
 if __name__ == '__main__':
+    # Create the commandline arguments
     parser = argparse.ArgumentParser(description='Installs fonts in a given folder')
     parser.add_argument('--fdir',
                         default='fonts',
-                        help='The directory containing fonts')
+                        help='directory containing fonts')
     parser.add_argument('--idir',
                         default=os.path.expanduser('~') + '/.fonts',
-                        help='The directory in which fonts will be installed')
+                        help='directory in which fonts will be installed')
     parser.add_argument('--ignorezip',
                         action='store_true',
                         help='Ignore zipped files')
     args = parser.parse_args()
 
-    print(args)
+    # print(args)
 
-    fontdirs = []
-    zipfiles = []
+    fontdirs = []  # directories that contain font files
+    zipfiles = []  # files that have zip extensions
 
     for dirname, dirnames, filenames in os.walk(args.fdir):
         # print path to all subdirectories first.
         # for subdirname in dirnames:
         #     print(os.path.join(dirname, subdirname))
 
-        # print path to all filenames.
         for filename in filenames:
             if isFont(filename):
                 # print("Contains font", dirname)
@@ -73,14 +78,19 @@ if __name__ == '__main__':
         else:
             print('Font Already Exists : ' + dir.split('/')[-1])
 
-    for zfile in zipfiles:
-        idir = args.idir + '/' + zfile.split('/')[-1][:-4]
-        # print(idir)
-        if not os.path.exists(idir):
-            with ZipFile(zfile, 'r') as zipfile:
-                for font in zipfile.namelist():
-                    if isFont(font) is True:
-                        zipfile.extractall(idir)
-                        break
-        else:
-            print('Font Already Exisits : ' + zfile.split('/')[-1][:-4])
+    if args.ignorezip is True:
+        if len(zipfiles) > 0:
+            print('Zip files exist but ignored, run without ignorezip to install them')
+    else:
+        for zfile in zipfiles:
+            idir = args.idir + '/' + zfile.split('/')[-1][:-4]
+            # print(idir)
+            if not os.path.exists(idir):
+                with ZipFile(zfile, 'r') as zipfile:
+                    for font in zipfile.namelist():
+                        # insures there is at least one font in zip
+                        if isFont(font) is True:
+                            zipfile.extractall(idir)
+                            break
+            else:
+                print('Font Already Exisits : ' + zfile.split('/')[-1][:-4])
