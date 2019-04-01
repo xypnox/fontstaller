@@ -92,7 +92,7 @@ if __name__ == '__main__':
             # print(idir)
             if not os.path.exists(idir):
                 with ZipFile(zfile, 'r') as zipfile:
-                    # insures there is at least one font in zip
+                    # ensures there is at least one font in zip
                     if isFont(zipfile.namelist()) is True:
                         zipfile.extractall(idir)
                         print("Font Installed: ", idir)
