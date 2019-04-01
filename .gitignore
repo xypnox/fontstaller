@@ -102,4 +102,4 @@ ENV/
 
 *.py.swp
 
-fonts
+fonts/*

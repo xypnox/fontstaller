@@ -15,6 +15,13 @@ import os
 
 
 def isFont(arg):
+    if isinstance(arg, list):
+        for font in arg:
+            if font.endswith('ttf'):
+                return True
+            elif font.endswith('otf'):
+                return True
+        return False
     if arg.endswith('ttf'):
         return True
     elif arg.endswith('otf'):
@@ -72,7 +79,7 @@ if __name__ == '__main__':
         if not os.path.exists(idir):
             os.makedirs(idir)
             onlyfiles = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f)) and not f.endswith('zip')]
-            print(dir.split('/')[-1], onlyfiles)
+            print("Font installed: ", dir.split('/')[-1], onlyfiles)
             for file_ in onlyfiles:
                 shutil.copy2(dir + '/' + file_, idir)
         else:
@@ -87,10 +94,9 @@ if __name__ == '__main__':
             # print(idir)
             if not os.path.exists(idir):
                 with ZipFile(zfile, 'r') as zipfile:
-                    for font in zipfile.namelist():
-                        # insures there is at least one font in zip
-                        if isFont(font) is True:
-                            zipfile.extractall(idir)
-                            break
+                    # insures there is at least one font in zip
+                    if isFont(zipfile.namelist()) is True:
+                        zipfile.extractall(idir)
+                        print("Font Installed: ", idir)
             else:
                 print('Font Already Exisits : ' + zfile.split('/')[-1][:-4])
