@@ -13,18 +13,16 @@ import argparse
 import shutil
 import os
 
+font_types = ['ttf', 'TTF', 'otf', 'OTF']
+
 
 def isFont(arg):
     if isinstance(arg, list):
         for font in arg:
-            if font.endswith('ttf'):
-                return True
-            elif font.endswith('otf'):
+            if font.endswith(tuple(font_types)):
                 return True
         return False
-    if arg.endswith('ttf'):
-        return True
-    elif arg.endswith('otf'):
+    if arg.endswith(tuple(font_types)):
         return True
     return False
 
